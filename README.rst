@@ -11,11 +11,11 @@ PagerdutyOperator
     
 PsqlOperator
 
-  Much like PostgresOperator, but uses `psql` instead soto allow
+  Much like PostgresOperator, but uses `psql` instead so as to allow
   taking advantage of psql-isms (eg timings).
   
   
-INSTALLATION
+Installation
 ------------
 
   Just copy the relevant .py file to your Airflow plugins directory:
