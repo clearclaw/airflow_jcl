@@ -5,6 +5,7 @@ from tempfile import NamedTemporaryFile
 from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.plugins_manager import AirflowPlugin
 
 LOG = logging.getLogger (__name__)
 
@@ -72,3 +73,7 @@ class PsqlOperator (BaseOperator):
   def on_kill (self):
     LOG.info ("Sending SIGTERM signal to bash process group")
     os.killpg (os.getpgid (self.proc.pid), signal.SIGTERM)
+
+class PsqlOperatorPlugin (AirflowPlugin):
+  name = "PsqlOperator"
+  operators = [PsqlOperator]

@@ -4,6 +4,7 @@ import json, logging, logtool, requests, retryp, socket
 from airflow.models import BaseOperator
 from airflow.exceptions import AirflowException
 from airflow.utils.decorators import apply_defaults
+from airflow.plugins_manager import AirflowPlugin
 
 LOG = logging.getLogger (__name__)
 EVENT_URL = "https://events.pagerduty.com/generic/2010-04-15/create_event.json"
@@ -71,3 +72,7 @@ class PagerdutyOperator (BaseOperator):
       raise PagerdutyOperatorException ("Pagerduty API call returned: %s"
                                         % r.status_code)
     return json.loads (r.text)
+
+class PagerdutyOperatorPlugin (AirflowPlugin):
+  name = "PagerdutyOperator"
+  operators = [PagerdutyOperator]
