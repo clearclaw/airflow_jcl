@@ -2,18 +2,19 @@
 
 import json, logging, logtool, requests, retryp, socket
 from airflow.models import BaseOperator
+from airflow.exceptions import AirflowException
 from airflow.utils.decorators import apply_defaults
 
-RETRY_COUNT = 5
-EVENT_URL = "https://events.pagerduty.com/generic/2010-04-15/create_event.json"
 LOG = logging.getLogger (__name__)
+EVENT_URL = "https://events.pagerduty.com/generic/2010-04-15/create_event.json"
+RETRY_COUNT = 5
 
-class PagerdutyOperatorException (Exception):
+class PagerdutyOperatorException (AirflowException):
   pass
 
 class PagerdutyOperator (BaseOperator):
   template_fields = ("description",)
-  ui_color = "#ff7f50"
+  ui_color = "#ff7f50" # Coral
 
   @logtool.log_call
   @apply_defaults
@@ -37,17 +38,13 @@ class PagerdutyOperator (BaseOperator):
     self.contexts = contexts if contexts is not None else []
     self.service_key = service_key
     if not api_key:
-      raise PagerdutyOperatorException (
-        "PagerdutyOperator: Missing api_key.")
+      raise PagerdutyOperatorException ("Missing api_key.")
     if not description:
-      raise PagerdutyOperatorException (
-        "PagerdutyOperator: Missing description.")
+      raise PagerdutyOperatorException ("Missing description.")
     if not service_key:
-      raise PagerdutyOperatorException (
-        "PagerdutyOperator: Missing description.")
+      raise PagerdutyOperatorException ("Missing description.")
     if contexts and not isinstance (contexts, list):
-      raise PagerdutyOperatorException (
-        "PagerdutyOperator: contexts is not a list.")
+      raise PagerdutyOperatorException ("contexts is not a list.")
 
   @retryp.retryp (count = RETRY_COUNT, expose_last_exc = True)
   @logtool.log_call
@@ -73,4 +70,4 @@ class PagerdutyOperator (BaseOperator):
     if r.status_code != 200:
       raise PagerdutyOperatorException ("Pagerduty API call returned: %s"
                                         % r.status_code)
-    return r.status_code
+    return json.loads (r.text)
