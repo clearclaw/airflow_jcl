@@ -47,7 +47,7 @@ class PsqlOperator (BaseOperator):
   def execute (self, context):
     output = []
     with NamedTemporaryFile (prefix = self.task_id) as f:
-      f.write (bytes (self.sql, "utf_8"))
+      f.write (self.sql.encode ("utf_8", "replace"))
       f.flush ()
       LOG.info ("SQL stored in %s", f.name)
       LOG.debug ("SQL contents: %s", self.sql)
