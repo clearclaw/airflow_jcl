@@ -50,7 +50,7 @@ class PsqlOperator (BaseOperator):
       f.write (self.sql.encode ("utf_8", "replace"))
       f.flush ()
       LOG.info ("SQL stored in %s", f.name)
-      LOG.debug ("SQL contents: %s", self.sql)
+      LOG.info ("SQL contents: \n%s", self.sql)
       cmd = ["psql", self.db_url, "-f", f.name,]
       self.proc = subprocess.Popen (
         cmd,
