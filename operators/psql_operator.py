@@ -14,6 +14,7 @@ class PsqlOperatorException (AirflowException):
 
 class PsqlOperator (BaseOperator):
   template_fields =  ("sql", "env", "db_url")
+  template_ext = (".sql",)
   ui_color = "#f0e68c" # Khaki
 
   @logtool.log_call
@@ -27,14 +28,7 @@ class PsqlOperator (BaseOperator):
       *args, **kwargs):
     self.proc = None
     super (PsqlOperator, self).__init__ (*args, **kwargs)
-    if sql.startswith ("@"):
-      try:
-        self.sql = file (sql[1:]).read ()
-      except IOError as e:
-        raise PsqlOperatorException (
-          "Can't read indirection file: %s (%s)" % (sql, e))
-    else:
-      self.sql = sql
+    self.sql = sql
     self.db_url = db_url
     self.env = env
     self.output_encoding = output_encoding
