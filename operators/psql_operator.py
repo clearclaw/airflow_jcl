@@ -32,7 +32,7 @@ class PsqlOperator (BaseOperator):
         self.sql = file (sql[1:]).read ()
       except IOError as e:
         raise PsqlOperatorException (
-          "Can't read indirection file: %s (%s)" % sql, e)
+          "Can't read indirection file: %s (%s)" % (sql, e))
     else:
       self.sql = sql
     self.db_url = db_url
@@ -49,7 +49,7 @@ class PsqlOperator (BaseOperator):
     with NamedTemporaryFile (prefix = self.task_id) as f:
       f.write (self.sql.encode ("utf_8", "replace"))
       f.flush ()
-      LOG.info ("SQL stored in %s", f.name)
+      LOG.debug ("SQL stored in %s", f.name)
       LOG.info ("SQL contents: \n%s", self.sql)
       cmd = ["psql", self.db_url, "-f", f.name,]
       self.proc = subprocess.Popen (
