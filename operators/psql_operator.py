@@ -54,7 +54,7 @@ class PsqlOperator (BaseOperator):
       LOG.info ("Output:")
       for line in iter (self.proc.stdout.readline, b""):
         line = line.decode (self.output_encoding).strip ()
-        LOG.info (line)
+        # LOG.info (line)
         output.append (line)
       self.proc.wait ()
       LOG.info ("psql RC: %s", self.proc.returncode)
