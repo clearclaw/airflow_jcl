@@ -44,7 +44,7 @@ class PsqlOperator (BaseOperator):
       f.write (self.sql.encode ("utf_8", "replace"))
       f.flush ()
       LOG.debug ("SQL stored in %s", f.name)
-      LOG.info ("SQL contents: \n%s", self.sql)
+      # LOG.info ("SQL contents: \n%s", self.sql)
       cmd = ["psql", self.db_url, "-f", f.name,]
       self.proc = subprocess.Popen (
         cmd,
@@ -54,7 +54,7 @@ class PsqlOperator (BaseOperator):
       LOG.info ("Output:")
       for line in iter (self.proc.stdout.readline, b""):
         line = line.decode (self.output_encoding).strip ()
-        # LOG.info (line)
+        LOG.info (line)
         output.append (line)
       self.proc.wait ()
       LOG.info ("psql RC: %s", self.proc.returncode)
