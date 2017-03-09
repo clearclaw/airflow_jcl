@@ -20,6 +20,8 @@ class PostgresXComOperator (PostgresOperator):
       cur.execute (self.sql)
       for rec in cur:
         rc.append (dict (rec))
+    for l in rc:
+      LOG.info ("Line: %s -- %l", type (l, l))
     return rc
 
 class PostgresXComOperatorPlugin (AirflowPlugin):
