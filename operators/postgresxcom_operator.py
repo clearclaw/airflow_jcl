@@ -21,7 +21,7 @@ class PostgresXComOperator (PostgresOperator):
       for rec in cur:
         rc.append (dict (rec))
     for l in rc:
-      LOG.info ("Line: %s -- %l", type (l, l))
+      LOG.info ("Line: %s -- %l", type (l), l)
     return rc
 
 class PostgresXComOperatorPlugin (AirflowPlugin):
