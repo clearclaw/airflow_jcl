@@ -13,11 +13,10 @@ class PostgresXComOperator (PostgresOperator):
   def execute (self, context): # pylint: disable=unused-argument
     logging.info ("Executing: " + str (self.sql))
     db = PostgresHook (postgres_conn_id = self.postgres_conn_id).get_conn ()
-    cur = db.cursor (cursor_factory = psycopg2.extras.NamedTupleCursor)
-    LOG.info ("Executing SQL: %s", self.sql)
-    cur.execute (self.sql)
     rc = []
-    for rec in cur:
-      rc.append (rec)
-    cur.close ()
+    with db.cursor (cursor_factory = psycopg2.extras.NamedTupleCursor) as cur:
+      LOG.info ("Executing SQL: %s", self.sql)
+      cur.execute (self.sql)
+      for rec in cur:
+        rc.append (rec)
     return rc
