@@ -15,11 +15,11 @@ class PostgresXComOperator (PostgresOperator):
     logging.info ("Executing: " + str (self.sql))
     db = PostgresHook (postgres_conn_id = self.postgres_conn_id).get_conn ()
     rc = []
-    with db.cursor (cursor_factory = psycopg2.extras.NamedTupleCursor) as cur:
+    with db.cursor (cursor_factory = psycopg2.extras.DictCursor) as cur:
       LOG.info ("Executing SQL: %s", self.sql)
       cur.execute (self.sql)
       for rec in cur:
-        rc.append (rec)
+        rc.append (dict (rec))
     return rc
 
 class PostgresXComOperatorPlugin (AirflowPlugin):
