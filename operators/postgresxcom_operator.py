@@ -12,7 +12,7 @@ class PostgresXComOperator (PostgresOperator):
 
   @logtool.log_call
   def execute (self, context): # pylint: disable=unused-argument
-    logging.info ("Executing: " + str (self.sql))
+    LOG.info ("Executing: %s", str (self.sql))
     db = PostgresHook (postgres_conn_id = self.postgres_conn_id).get_conn ()
     rc = []
     with db.cursor (cursor_factory = psycopg2.extras.DictCursor) as cur:
@@ -20,8 +20,6 @@ class PostgresXComOperator (PostgresOperator):
       cur.execute (self.sql)
       for rec in cur:
         rc.append (dict (rec))
-    for l in rc:
-      LOG.info ("Line: %s -- %s", type (l), l)
     return rc
 
 class PostgresXComOperatorPlugin (AirflowPlugin):
