@@ -1,4 +1,5 @@
 logtool
 pagerduty
+pika
 requests
 retryp
