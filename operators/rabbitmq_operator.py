@@ -75,7 +75,7 @@ class RabbitmqEnqueueOperator (BaseOperator):
         self._q_setup (channel, self.q_names)
         LOG.info ("Starting send...")
         rc = {}
-        for ndx, d in enumerate (self.source_fn ()):
+        for ndx, d in enumerate (self.source_fn (context)):
           q_name, msg = d
           if conn.channel.publish (
               body = json.dumps (msg, sort_keys = True),
@@ -140,6 +140,16 @@ class RabbitmqDequeueOperator (BaseOperator):
     )
 
   @logtool.log_call
+  def _q_setup (self, channel, q_names, prefetch = None):
+    for q in q_names:
+      channel.exchange_declare (exchange = q, type = "direct")
+      channel.queue_declare (queue = q, durable = True)
+      channel.queue_bind (exchange = q, queue = q,
+                          routing_key = q)
+    if prefetch is not None:
+      channel.basic_qos (prefetch_count = prefetch)
+
+  @logtool.log_call
   def execute (self, context):
     with pika.BlockingConnection (parameters = self.q_params) as conn:
       LOG.info ("Priming queues and exchanges...")
@@ -153,7 +163,7 @@ class RabbitmqDequeueOperator (BaseOperator):
           if not msg:
             return {"message_count": ndx}
           method, _, body = msg
-          self.process_fn (json.loads (body))
+          self.process_fn (context, json.loads (body))
           channel.basic_ack (method.delivery_tag)
 
 class RabbitmqOperatorPlugin (AirflowPlugin):
