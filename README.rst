@@ -33,7 +33,7 @@ RabbitmqDequeueOperator
   queue is empty.
 
 Note: These two Rabbit* operations require RabbitMQ and default to the
-queue connection used by Airflow if present.  It whould be possible to
+queue connection used by Airflow if present.  It should be possible to
 run multiple dequeue operators in parallel, scaling out horizontally
 as appropriate to your load.  (This code is based on very similar
 inline code I have in a few production DAGs)
